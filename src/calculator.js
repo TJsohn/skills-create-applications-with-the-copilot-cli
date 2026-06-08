@@ -85,7 +85,7 @@ function main(argv) {
   }
 
   if (argv.length !== 3) {
-    throw new Error('Usage: node src/calculator.js <number> <operator> <number> OR node src/calculator.js sqrt <number>');
+    throw new Error('Usage: node src/calculator.js <number> <operator> <number> or node src/calculator.js sqrt <number>');
   }
 
   const [left, operator, right] = argv;
