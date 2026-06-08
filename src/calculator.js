@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Supported operations: addition (+), subtraction (-), multiplication (*), and division (/).
+ * Supported operations: addition (+), subtraction (-), multiplication (*), division (/),
+ * modulo (%), exponentiation (^), and square root (sqrt).
  */
 
 function add(a, b) {
@@ -24,11 +25,36 @@ function divide(a, b) {
   return a / b;
 }
 
+function modulo(a, b) {
+  return a % b;
+}
+
+function power(base, exponent) {
+  return base ** exponent;
+}
+
+function squareRoot(n) {
+  if (n < 0) {
+    throw new Error('Square root of a negative number is not allowed.');
+  }
+
+  return Math.sqrt(n);
+}
+
+function isSquareRootOperation(operator) {
+  return operator === 'sqrt' || operator === 'squareRoot' || operator === '√';
+}
+
 function calculate(left, operator, right) {
   const a = Number(left);
   const b = Number(right);
+  const isUnaryOperation = isSquareRootOperation(operator);
 
-  if (Number.isNaN(a) || Number.isNaN(b)) {
+  if (Number.isNaN(a) || (!isUnaryOperation && Number.isNaN(b))) {
+    if (isUnaryOperation) {
+      throw new Error('Operand must be a valid number.');
+    }
+
     throw new Error('Both operands must be valid numbers.');
   }
 
@@ -41,18 +67,29 @@ function calculate(left, operator, right) {
       return multiply(a, b);
     case '/':
       return divide(a, b);
-    default:
-      throw new Error(`Unsupported operation: ${operator}`);
+   case '%':
+   case 'modulo':
+     return modulo(a, b);
+   case '^':
+   case '**':
+   case 'power':
+     return power(a, b);
+   case 'sqrt':
+   case 'squareRoot':
+   case '√':
+     return squareRoot(a);
+   default:
+     throw new Error(`Unsupported operation: ${operator}`);
   }
 }
 
 function main(argv) {
   const [left, operator, right] = argv.slice(2);
 
-  if (!left || !operator || !right) {
-    console.error('Usage: node src/calculator.js <number> <operator> <number>');
-    process.exitCode = 1;
-    return;
+  if (!left || !operator || (!isSquareRootOperation(operator) && !right)) {
+   console.error('Usage: node src/calculator.js <number> <operator> [number]');
+   process.exitCode = 1;
+   return;
   }
 
   try {
@@ -73,5 +110,8 @@ module.exports = {
   subtract,
   multiply,
   divide,
+  modulo,
+  power,
+  squareRoot,
   calculate,
 };
